@@ -1,8 +1,9 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-
+plugins {
+    id 'java'
+    id 'maven-publish' // Replaces 'maven'
+    id 'eclipse'
+    id 'idea'
+}
 
 version = "2.4.0." + (System.getenv('BUILD_NUMBER') ?: 'CUSTOM')
 group = "com.github.parker8283"
@@ -12,14 +13,14 @@ repositories {
     mavenCentral()
 }
 
+// 'compile' was replaced by 'implementation' in newer Gradle versions
 dependencies {
-    compile 'org.ow2.asm:asm-debug-all:5.0.4'
-    compile 'com.google.guava:guava:18.0'
-    compile 'net.sf.jopt-simple:jopt-simple:4.9'
-	
-	compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
-	compile group: 'net.sf.trove4j', name: 'trove4j', version: '3.0.3'
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.7'
+    implementation 'org.ow2.asm:asm-debug-all:5.0.4'
+    implementation 'com.google.guava:guava:18.0'
+    implementation 'net.sf.jopt-simple:jopt-simple:4.9'
+    implementation 'com.google.code.gson:gson:2.7'
+    implementation 'net.sf.trove4j:trove4j:3.0.3'
+    implementation 'org.apache.commons:commons-lang3:3.7'
 }
 
 task copyAndReplace(type: Copy) {
@@ -30,10 +31,11 @@ task copyAndReplace(type: Copy) {
     from(sourceSets.main.java) {
         exclude '**/BON2.java'
     }
-    into project.getBuildDir().toString() + "/sources/java"
+    into layout.buildDirectory.dir("sources/java")
 }
+
 tasks.compileJava.dependsOn copyAndReplace
-tasks.compileJava.setSource(project.getBuildDir().toString() + '/sources/java')
+tasks.compileJava.setSource(layout.buildDirectory.dir('sources/java'))
 
 def commonManifest = {
     attributes 'Main-Class': 'com.github.parker8283.bon2.BON2',
@@ -44,20 +46,24 @@ def commonManifest = {
 
 jar {
     manifest commonManifest
-    classifier = 'bin'
+    archiveClassifier = 'bin'
 }
 
-task fatJar(type: Jar, dependsOn: 'jar') {
-    inputs.file jar.archivePath
-    from(configurations.compile.collect { zipTree(it).matching { exclude 'META-INF/**' } })
+// Updated fatJar for modern Gradle
+task fatJar(type: Jar) {
+    dependsOn 'jar'
+    archiveClassifier = 'all'
     manifest commonManifest
-    classifier = 'all'
+
+    // We use runtimeClasspath because 'compile' configuration is gone
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    // Include the project's own classes
+    with jar
 }
 
-fatJar.doFirst {
-    from zipTree(jar.archivePath)
-}
-
+// This tells Gradle to use the fatJar as the main output artifact
 artifacts {
     archives fatJar
 }
