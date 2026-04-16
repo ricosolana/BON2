@@ -25,6 +25,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 
+import com.github.parker8283.bon2.BON2;
 import com.github.parker8283.bon2.data.BONFiles;
 import com.github.parker8283.bon2.data.MappingVersion;
 import com.github.parker8283.bon2.data.VersionLookup;
@@ -162,7 +163,7 @@ public class BONUtils {
           if (entry.isDirectory()) {
             continue;
           } else {
-            System.out.println("Extracting file: " + destinationPath);
+            BON2.log("Extracting file: " + destinationPath);
 
             BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
 
@@ -190,7 +191,7 @@ public class BONUtils {
             zipFile.close();
           }
         } catch (IOException e) {
-            System.err.println("Error while closing zip file:");
+            BON2.logErr("Error while closing zip file:");
             e.printStackTrace();
         }
       }

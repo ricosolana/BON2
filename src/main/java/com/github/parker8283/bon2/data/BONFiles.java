@@ -2,11 +2,11 @@ package com.github.parker8283.bon2.data;
 
 import java.io.File;
 
-import com.google.common.base.MoreObjects;
+import com.github.parker8283.bon2.BON2;
 
 public class BONFiles {
     
-    public static final File USER_GRADLE_FOLDER = new File(MoreObjects.firstNonNull(System.getenv("GRADLE_USER_HOME"), System.getProperty("user.home") + File.separator + ".gradle"));
+    public static File USER_GRADLE_FOLDER = BON2.USER_GRADLE_FOLDER; // new File(MoreObjects.firstNonNull(System.getenv("GRADLE_USER_HOME"), System.getProperty("user.home") + File.separator + ".gradle"));
     public static final File GRADLE_CACHES_FOLDER = new File(USER_GRADLE_FOLDER, "caches");
     public static final File CACHES_MINECRAFT_FOLDER = new File(GRADLE_CACHES_FOLDER, "minecraft");
     public static final File MINECRAFT_NET_FOLDER = new File(CACHES_MINECRAFT_FOLDER, "net");

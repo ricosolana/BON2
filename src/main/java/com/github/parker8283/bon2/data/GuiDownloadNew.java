@@ -19,6 +19,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import com.github.parker8283.bon2.BON2;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.github.parker8283.bon2.data.VersionJson.MappingsJson;
@@ -122,7 +123,7 @@ public class GuiDownloadNew extends JFrame {
                     }
                     
                     if (temp.exists()) {
-                        System.err.println("Temporary .zip already exists, deleting...");
+                        BON2.logErr("Temporary .zip already exists, deleting...");
                         temp.delete();
                     }
                     Files.copy(in, temp.toPath());

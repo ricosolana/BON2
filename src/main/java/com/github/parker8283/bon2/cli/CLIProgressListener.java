@@ -1,17 +1,18 @@
 package com.github.parker8283.bon2.cli;
 
+import com.github.parker8283.bon2.BON2;
 import com.github.parker8283.bon2.data.IProgressListener;
 
 public class CLIProgressListener implements IProgressListener {
 
     @Override
     public void start(int max, String label) {
-        System.out.println(label);
+        BON2.log(label);
     }
 
     @Override
     public void startWithoutProgress(String label) {
-        System.out.println(label);
+        BON2.log(label);
     }
 
     @Override
@@ -26,6 +27,6 @@ public class CLIProgressListener implements IProgressListener {
     
     @Override
     public void setLabel(String label) {
-        System.out.println(label);
+        BON2.log(label);
     }
 }
